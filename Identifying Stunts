@@ -1,0 +1,90 @@
+# Input the starting list of locations as well as the ending list at the arbitrary 2 second mark
+
+def identify_stunt(list1, list2):
+    # Loosely checking if lists are from same play
+    len1 = len(list1)
+    len2 = len(list2)
+    if len1 != len2:
+        return "Error: mismatching lists"
+
+    # Turning (1,2,3,4,5) into (0,1,2,3,4) for ease of indexing
+    list1 = [x - 1 for x in list1]
+    list2 = [x - 1 for x in list2]
+
+    # Reordering lists so the relative positions are in order
+    index = [0] * len1
+    for i in range(len1):
+        index[list1[i]] = i
+
+    stunt_blitz = [0] * 2
+    stunt_ids = []
+
+    # (1,2,3,4,5) -> (2,1,3,4,5), or (0,1,2,3,4) -> (1,0,2,3,4)
+    # far left stunt: 1
+    if (list2[index[0]] == 1) & (list2[index[1]] == 0):
+        stunt_ids.append(1)
+
+    # (1,2,3,4,5) -> (1,2,3,5,4), or (0,1,2,3,4) -> (0,2,1,4,3)
+    # far right stunt: 2
+    if (list2[index[-1]] == len1-2) & (list2[index[-2]] == len1-1):
+        stunt_ids.append(2)
+
+    # (1,2,3,4,5) -> (3,2,1,4,5), or (0,1,2,3,4) -> (2,1,0,3,4)
+    # far left-to-mid stunt: 3
+    if (len1 > 2) & (list2[index[0]] == 2) & (list2[index[2]] == 0):
+        stunt_ids.append(3)
+    
+    # (1,2,3,4,5) -> (1,2,5,4,3), or (0,1,2,3,4) -> (0,1,4,3,2)
+    # far right-to-mid stunt: 4
+    if (len1 > 2) & (list2[index[-1]] == len1-3) & (list2[index[-3]] == len1-1):
+        stunt_ids.append(4)
+
+    # (1,2,3,4,5) -> (1,3,2,4,5), or (0,1,2,3,4) -> (0,2,1,3,4)
+    # left-mid stunt: 5
+    if (len1 > 3) & (list2[index[1]] == 2) & (list2[index[2]] == 1):
+        stunt_ids.append(5)
+
+    # (1,2,3,4,5) -> (1,2,4,3,5), or (0,1,2,3,4) -> (0,1,3,2,4)
+    # right-mid stunt: 6
+    if (len1 > 3) & (list2[index[-2]] == len1-3) & (list2[index[-3]] == len1-2):
+        stunt_ids.append(6)
+
+    # If there's only a 4-man rush, left-mid & right-mid are the same
+    # So we have a seventh stunt:
+    # (1,2,3,4) -> (1,3,2,4), or (0,1,2,3) -> (0,2,1,4)
+    # mid stunt: 7
+    if (5 in stunt_ids) & (6 in stunt_ids):
+        stunt_ids.pop()
+        stunt_ids.pop()
+        stunt_ids.append(7)
+
+    # (1,2,3,4,5) -> (1,4,3,2,5), or (0,1,2,3,4) -> (0,3,2,1,5)
+    # (1,2,3,4,5,6) -> (1,5,3,4,2,6), or (0,1,2,3,4,5) -> (0,4,2,3,1,5)
+    # left-bigmid: 8
+    if (len1 >= 5) & (list2[index[1]] in range(3, len1-2)):
+        stunt_ids.append(8)
+
+    # (1,2,3,4,5) -> (1,4,3,2,5), or (0,1,2,3,4) -> (0,3,2,1,5)
+    # (1,2,3,4,5,6) -> (1,2,5,4,3,6), or (0,1,2,3,4,5) -> (0,1,4,3,2,5)
+    # right-bigmid: 9
+    if (len1 >= 5) & (list2[index[len1-2]] in range(1, len1-4)):
+        stunt_ids.append(9)
+
+    # left-bigmid & right-bigmid could be the same
+    # So we have a tenth stunt to cover similarities and very large rush packages
+    # bigmid stunt: 10
+    if (8 in stunt_ids) & (9 in stunt_ids):
+        stunt_ids.pop()
+        stunt_ids.pop()
+        stunt_ids.append(10)
+
+    # If none of these stunts match but there is a change, we have an umbrella 'other' category
+    # other stunt: 11
+    if (not stunt_ids) & (list1 != list2):
+        stunt_ids.append(11)
+
+  
+    s=[str(i) for i in stunt_ids]
+    stunt_blitz[0] = int("".join(s))
+    
+    return stunt_blitz
