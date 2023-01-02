@@ -1,4 +1,5 @@
 # Input is two lists back to back where a stunt has been identified
+# So list where stunt occurs, and then lag(list)
 # Also need playDirection in input
 # Probably want to only run function on rows where stunt has been identified
 
