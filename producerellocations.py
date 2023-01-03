@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jan  3 17:00:24 2023
+
+@author: 18172
+"""
+
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -127,7 +134,30 @@ def zones (row):
     
     
     
+    
 p_r['zone'] = p_r.apply (lambda row: zones(row), axis=1)
+
+def posdef (row):
+    pos = row['pff_positionLinedUp']
+    corners = ["LCB", "RCB", "SCBiL", "SCBiR", "SCBL",  "SCBoL", "SCBoR", "SCBR"]
+    vert_pos = (row['los'] - row['x'])
+    if row['playDirection'] == "right":
+        vert_pos = vert_pos * -1
+        
+    if pos in corners:
+        return(3)        
+    elif vert_pos>1.5:
+        return(2)
+    else:
+        return(1)
+    
+    
+    
+    
+    
+p_r['npos'] = p_r.apply (lambda row: posdef(row), axis=1)
+
+
 
 
 current_timestamp = None
@@ -145,7 +175,7 @@ for index, row in p_r.iterrows():
     if row['playDirection'] == "right":
         vert_pos = vert_pos * -1
     
- 
+
     locations_at_timestamp.append(row['y'])
     
     # Step 3: Sort the list of locations at each timestamp
@@ -154,21 +184,17 @@ for index, row in p_r.iterrows():
     # Step 4: Assign a relative location to each player at each timestamp
     relative_locations = {}
     for i, location in enumerate(locations_at_timestamp):
-        if pos in corners:
-            relative_locations[location] = (i + 1,3)
-        elif vert_pos>1.5:
-            relative_locations[location] = (i + 1,2)
-        else:
-            relative_locations[location] = (i + 1,1)
+        relative_locations[location] = i + 1
         
     # Store the relative locations for each player at this timestamp
     relative_locations_at_timestamp[current_timestamp] = relative_locations
     
+    
+    
+    
+    
 counte = 0
 count = 0
-p_r['relative_location'] = None
-
-
 for index, row in p_r.iterrows():
     try:
         p_r.at[index, 'relative_location'] = relative_locations_at_timestamp[row['time']][row['y']]
@@ -177,6 +203,7 @@ for index, row in p_r.iterrows():
         print("KeyError occurred at index {}".format(index))
         p_r.at[index, 'relative_location'] = 0
         counte += 1
+        
         
 def group_and_create_column(df, group_col, value_col):
   # Group the dataframe by the specified column
@@ -189,10 +216,9 @@ def group_and_create_column(df, group_col, value_col):
   new_df = new_df.rename(columns={value_col: f"{value_col}_list"})
   
   return new_df
-
+        
 b = group_and_create_column(p_r, 'time', 'relative_location')
 
-m = pd.merge(p_r, b, on = "time", how = "outer")
 
-m = m[['gameId', 'playId', 'nflId', 'time', 'team', 'playDirection', 'x', 'y', 's', 'a', 'dis', 'o', 'dir', 'event', 'pff_role', 'pff_positionLinedUp', 'los', 'cop', 'zone', 'relative_location', 'relative_location_list']]
-        
+
+m = pd.merge(p_r, b, on = "time", how = "outer")
