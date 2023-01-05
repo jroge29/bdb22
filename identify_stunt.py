@@ -32,7 +32,7 @@ def identify_stunt(row):
       # (1,2,3,4,5) -> (2,1,3,4,5), or (0,1,2,3,4) -> (1,0,2,3,4)
       # far left stunt: 1
       if (list2[index[0]] == 1) & (list2[index[1]] == 0):
-          if '1' in back:
+          if 1 in back:
             stunt_ids.append('1*')
           else:
             stunt_ids.append('1')
@@ -40,7 +40,7 @@ def identify_stunt(row):
       # (1,2,3,4,5) -> (1,2,3,5,4), or (0,1,2,3,4) -> (0,2,1,4,3)
       # far right stunt: 2
       if (list2[index[-1]] == len1-2) & (list2[index[-2]] == len1-1):
-          if str(len1) in back:
+          if len1 in back:
             stunt_ids.append('2*')
           else:
             stunt_ids.append('2')
@@ -48,7 +48,7 @@ def identify_stunt(row):
       # (1,2,3,4,5) -> (3,2,1,4,5), or (0,1,2,3,4) -> (2,1,0,3,4)
       # far left-to-mid stunt: 3
       if (len1 > 2) & (list2[index[0]] in range(1,3)) & (list2[index[2]] == 0):
-          if '1' in back:
+          if 1 in back:
             stunt_ids.append('3*')
           else:
             stunt_ids.append('3')
@@ -56,7 +56,7 @@ def identify_stunt(row):
       # (1,2,3,4,5) -> (1,2,5,4,3), or (0,1,2,3,4) -> (0,1,4,3,2)
       # far right-to-mid stunt: 4
       if (len1 > 2) & (list2[index[-1]] in range(len1-3, len1-1)) & (list2[index[-3]] == len1-1):
-          if str(len1) in back:
+          if len1 in back:
             stunt_ids.append('4*')
           else:
             stunt_ids.append('4')
@@ -64,7 +64,7 @@ def identify_stunt(row):
       # (1,2,3,4,5) -> (1,3,2,4,5), or (0,1,2,3,4) -> (0,2,1,3,4)
       # left-mid stunt: 5
       if (len1 > 4) & (list2[index[1]] == 2) & (list2[index[2]] == 1):
-          if '2' in back:
+          if 2 in back:
             stunt_ids.append('5*')
           else:
             stunt_ids.append('5')
@@ -72,7 +72,7 @@ def identify_stunt(row):
       # (1,2,3,4,5) -> (1,2,4,3,5), or (0,1,2,3,4) -> (0,1,3,2,4)
       # right-mid stunt: 6
       if (len1 > 4) & (list2[index[-2]] == len1-3) & (list2[index[-3]] == len1-2):
-          if str(len1-1) in back:
+          if (len1-1) in back:
             stunt_ids.append('6*')
           else:
             stunt_ids.append('6')
@@ -82,7 +82,7 @@ def identify_stunt(row):
       # (1,2,3,4) -> (1,3,2,4), or (0,1,2,3) -> (0,2,1,4)
       # mid stunt: 7
       if (len1 == 4) & (list2[index[1]] == 2) & (list2[index[2]] == 1):
-          if '2' in back:
+          if 2 in back:
             stunt_ids.append('7*')  # in this case, * means the left defender in back
           else:
             stunt_ids.append('7')
@@ -91,7 +91,7 @@ def identify_stunt(row):
       # (1,2,3,4,5,6) -> (1,5,3,4,2,6), or (0,1,2,3,4,5) -> (0,4,2,3,1,5)
       # left-bigmid: 8
       if (len1 >= 5) & (list2[index[1]] in range(3, len1-1)):
-          if '2' in back:
+          if 2 in back:
             stunt_ids.append('8*')  # left defender in back
           else:
             stunt_ids.append('8')
