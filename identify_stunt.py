@@ -273,16 +273,15 @@ def identify_stunt(row):
     
   
 ## pandas code to implement
-# Will need to turn all_back into a list 
     
-    
-m['stunt'] = None
-m['lag_relative_location_list'] = m['relative_location_list'].shift(1)
-m['lag_uId'] = m['uId'].shift(1)
-for index, row in m.iterrows():
-  if (index != 0) & (m.at[index, 'lag_uId'] == m.at[index, 'uId']) & (m.at[index, 'lag_relative_location_list'] != m.at[index, 'relative_location_list']):
-    m.at[index, 'stunt'] = 1
-  else:
-    m.at[index, 'stunt'] = 0
-
-m['stunt_class'] = m[1:].apply(lambda row: identify_stunt(row), axis=1)
+   
+                                                                                                                                              
+z['stunt'] = None
+z['lag_relative_location_list'] = z['relative_location_list'].shift(1)
+z['lag_playId'] = z['playId'].shift(1)
+for index, row in z.iterrows():
+    if ((index != 0) and (z.at[index, 'lag_playId'] == z.at[index, 'playId'])) & (z.at[index, 'lag_relative_location_list'] != z.at[index, 'relative_location_list']):
+        z.at[index, 'stunt'] = 1
+    else:
+        z.at[index, 'stunt'] = 0
+z['stunt_class'] = z[0:].apply(lambda row: identify_stunt(row), axis=1)
