@@ -1,13 +1,7 @@
 library(tidyverse)
 library(purrr)
-library(useful)
-library(data.table)
 full777 <- read_csv("full777.csv")
 
-
-#intolist <- function(rel){
-as.list(strsplit(substring(rel, 3, nchar(rel) - 2), "), (", fixed = TRUE)[[1]])
-}
 
 compare_list <- function(rel1, rel2){
   s.a <- strsplit(rel1, "")[[1]]
@@ -20,8 +14,6 @@ fullplays_edit <- full777 %>%
   unite("gameplayId", gameId, playId) %>%
   mutate(stunt_code = str_replace_all(relative_location_list, c("[[:punct:]]" = "", " " = "", "0" = ""))) %>%
   mutate(relative_location_list = str_replace_all(relative_location_list, c("0.0, " = ""))) %>%
-  # mutate(relative_location_list = map(relative_location_list, intolist)) %>%
-  # first condition put in because of errors with relative locations - weird stuff going on sometimes
   mutate(stunt = ifelse(nchar(stunt_code) != nchar(lag(stunt_code)) | gameplayId != lag(gameplayId) | stunt_code == lag(stunt_code), 0, 1))
 
 
@@ -107,6 +99,3 @@ final$all_back = as.character(final$all_back)
 
 write.csv(final, "full_front_back_data.csv")
 
-
-# gets messed up with the zeros (11307, 55041)
-# fixed
